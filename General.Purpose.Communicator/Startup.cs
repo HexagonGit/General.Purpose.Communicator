@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
 using General.Purpose.Communicator.Hubs;
-using General.Purpose.Communicator.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
+using General.Purpose.Communicator.Interfaces;
+using General.Purpose.Communicator.Managers.Password;
+using General.Purpose.Communicator.Controllers;
 
 namespace General.Purpose.Communicator
 {
@@ -24,6 +25,9 @@ namespace General.Purpose.Communicator
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IPasswordManager, PasswordManager>();
+            services.AddSingleton<IAccountController, AccountController>();
+
             services.AddRazorPages();
             services.AddSignalR();
             //string connection = "Server=(localdb)\\mssqllocaldb;Database=authorize;Trusted_Connection=True;";
@@ -64,7 +68,7 @@ namespace General.Purpose.Communicator
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IAccountController accountController)
         {
             if (env.IsDevelopment())
             {
@@ -91,6 +95,8 @@ namespace General.Purpose.Communicator
                 endpoints.MapControllers();
                 endpoints.MapHub<CryptoChat>("/chatHub");
             });
+
+            var passwordManager = new PasswordManager();
         }
     }
 }

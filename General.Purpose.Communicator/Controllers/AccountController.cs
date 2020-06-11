@@ -6,15 +6,18 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using General.Purpose.Communicator.Models;
+using General.Purpose.Communicator.Interfaces;
 
 namespace General.Purpose.Communicator.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : Controller, IAccountController
     {
-        private ApplicationContext _context;
-        public AccountController(/*ApplicationContext context*/)
+        public string Password { private get; set; }
+        private readonly IPasswordManager _passwordManager;
+        public AccountController(/*ApplicationContext context*/ IPasswordManager passwordManager)
         {
             //_context = context;
+            _passwordManager = passwordManager;
         }
         [HttpPost("/token")]
         public async Task<IActionResult> Token(string username, string password)
@@ -48,11 +51,11 @@ namespace General.Purpose.Communicator.Controllers
         {
             var person = new User();
 
-            if ((username == "Vovan" || username == "KernelEvil") && password == "test")
+            if ((username == "Vovan" || username == "KernelEvil") && password == _passwordManager.Password)
             {
                 person.Email = username;
 
-                person.Password = "test";
+                person.Password = _passwordManager.Password;
                 person.Role.Name = "admin";
                 person.Role.Id = 1;
             }
