@@ -95,8 +95,6 @@ namespace General.Purpose.Communicator
                 endpoints.MapControllers();
                 endpoints.MapHub<CryptoChat>("/chatHub");
             });
-
-            var passwordManager = new PasswordManager();
         }
     }
 }

@@ -23,16 +23,14 @@ namespace General.Purpose.Communicator.Managers.Password
             _timer = new Timer
             {
                 AutoReset = true,
-                Interval = TimeSpan.FromHours(24).TotalMilliseconds
+                Interval = TimeSpan.FromHours(12).TotalMilliseconds
             };
 
             _timer.Elapsed += CreateNewPassword;
             _timer.Start();
-
-            Password = "test";
         }
 
-        private void CreateNewPassword(Object source, ElapsedEventArgs e)
+        private  void CreateNewPassword(Object source, ElapsedEventArgs e)
         {
             const int length = 10;
             const string pool = "abcdefghijklmnopqrstuvwyxzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
@@ -46,7 +44,7 @@ namespace General.Purpose.Communicator.Managers.Password
                 builder.Append(c);
             }
 
-            SendToHexaBotUsers(builder.ToString());
+                SendToHexaBotUsers(builder.ToString());
         }
 
         private void SendToHexaBotUsers(string password)
@@ -54,7 +52,7 @@ namespace General.Purpose.Communicator.Managers.Password
             Password = password;
 
             _botClient = new TelegramBotClient("1296798539:AAFIYCRljM80J193Jlk1k4PmxchQog2EumA");
-            _botClient.SendTextMessageAsync(-368508167, "Ваш пароль для чата: " + password);
+            _botClient.SendTextMessageAsync(-368508167, "Ваш новый пароль для чата: " + password);
         }
     }
 }
